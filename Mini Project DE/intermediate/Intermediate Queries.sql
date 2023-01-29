@@ -1,6 +1,8 @@
 -- 1. Jumlah customer tiap bulan pada tahun 1997
 WITH CTE_RESULT AS(
-SELECT DATENAME(MONTH, OrderDate) AS month, COUNT(DISTINCT CustomerID) AS number_of_customer
+SELECT 
+	DATENAME(MONTH, OrderDate) AS month, 
+	COUNT(DISTINCT CustomerID) AS number_of_customer
 FROM [Northwind].[dbo].[Orders]
 WHERE DATEPART(year, OrderDate) = '1997'
 GROUP BY DATENAME(MONTH, OrderDate)
@@ -75,14 +77,16 @@ SELECT *,
 	END AS total_sales
 FROM [Northwind].[dbo].[Order Details]
 )
-SELECT total_sales, COUNT(DISTINCT OrderID) AS number_of_order
+SELECT 
+	total_sales, 
+	COUNT(DISTINCT OrderID) AS number_of_order
 FROM CTE_TOTAL_SALES
 GROUP BY total_sales
 ORDER BY 
 	CASE total_sales
-    WHEN '<=100' THEN 1
-    WHEN '100<x<=250' THEN 2
-    WHEN '250<x<=500' THEN 3
+    	WHEN '<=100' THEN 1
+    	WHEN '100<x<=250' THEN 2
+    	WHEN '250<x<=500' THEN 3
 	WHEN '>500' THEN 4
     ELSE 0
 END ASC
@@ -105,7 +109,11 @@ WHERE CustomerID IN (
 
 -- 7. Nama produk yang merupakan Top 5 sales tertinggi tiap bulan di tahun 1997.
 WITH CTE_SALES AS (
-SELECT OD.OrderID, OD.ProductID, OrderDate, (OD.UnitPrice * OD.Quantity) * (1-OD.Discount) AS total_sales
+SELECT 
+	OD.OrderID, 
+	OD.ProductID, 
+	OrderDate, 
+	(OD.UnitPrice * OD.Quantity) * (1-OD.Discount) AS total_sales
 FROM [Northwind].[dbo].[Orders] AS O
 RIGHT JOIN [Northwind].[dbo].[Order Details] AS OD
 ON O.OrderID = OD.OrderID
@@ -145,13 +153,13 @@ ORDER BY CASE
 -- 8. Buatlah view untuk melihat Order Details yang berisi OrderID, ProductID, ProductName, UnitPrice, Quantity, Discount, Harga setelah diskon.
 CREATE VIEW View_Order_Detail AS
 SELECT 
-	[OrderID]
+     [OrderID]
     ,OD.[ProductID]
-	,P.[ProductName]
+    ,P.[ProductName]
     ,OD.[UnitPrice]
     ,[Quantity]
     ,[Discount]
-	,(OD.UnitPrice * Quantity) * (1 - Discount) AS total_price
+    ,(OD.UnitPrice * Quantity) * (1 - Discount) AS total_price
 FROM [Northwind].[dbo].[Order Details] AS OD
 LEFT JOIN [Northwind].[dbo].[Products] AS P
 ON OD.ProductID = P.ProductID
@@ -163,11 +171,11 @@ CREATE PROCEDURE [dbo].[SP_Customer_Order_Detail]
 AS
 BEGIN
 	SELECT O.[CustomerID]
-      ,[CompanyName]
+      	  ,[CompanyName]
 	  ,[OrderID]
 	  ,[OrderDate]
-      ,[RequiredDate]
-      ,[ShippedDate]
+          ,[RequiredDate]
+          ,[ShippedDate]
 	FROM [Northwind].[dbo].[Customers] AS C
 	RIGHT JOIN [Northwind].[dbo].[Orders] AS O
 	ON C.CustomerID = O.CustomerID
